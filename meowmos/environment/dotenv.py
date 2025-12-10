@@ -1,6 +1,4 @@
 import os
-from dotenv import load_dotenv
-
 
 def get_env_var(var_name: str) -> str:
     """Fetch an evironment variable value.
