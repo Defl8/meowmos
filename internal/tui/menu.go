@@ -2,9 +2,10 @@ package tui
 
 import (
 	"fmt"
+	"meowmos/internal/utils"
+
 	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
-	"meowmos/internal/utils"
 )
 
 type MenuViewModel struct {

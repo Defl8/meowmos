@@ -11,9 +11,10 @@ import (
 
 	"log"
 
+	"meowmos/internal/tui"
+
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/joho/godotenv"
-	"meowmos/internal/tui"
 )
 
 func init() {
