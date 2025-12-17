@@ -37,6 +37,8 @@ func (m MenuViewModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case key.Matches(msg, m.Keys.Down):
 			m.CursorPos = utils.MenuWrap(m.CursorPos+1, len(m.Actions))
 
+		case key.Matches(msg, m.Keys.Enter):
+
 		case key.Matches(msg, m.Keys.Back):
 			return m, tea.Quit
 		}

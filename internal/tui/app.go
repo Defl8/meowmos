@@ -2,17 +2,8 @@ package tui
 
 import tea "github.com/charmbracelet/bubbletea"
 
-type currentView int
-
-const (
-	menuView currentView = iota
-	addUserView
-	editUserView
-	forceSendView
-)
-
 type AppModel struct {
-	currentView currentView
+	currentView View
 	menuModel   MenuViewModel
 }
 
@@ -28,12 +19,31 @@ func (a AppModel) Init() tea.Cmd {
 }
 
 func (a AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	switch a.currentView {
-	case menuView:
-		m, cmd := a.menuModel.Update(msg)
-		a.menuModel = m.(MenuViewModel)
-		return a, cmd
+	switch msg := msg.(type) {
+	case tea.KeyMsg: // key press
+		switch a.currentView {
+		case menuView:
+			m, cmd := a.menuModel.Update(msg)
+			a.menuModel = m.(MenuViewModel)
+			return a, cmd
+		}
+
+	case SwitchViewMsg: // Switch to a different view
+		switch msg.View {
+		case menuView:
+			a.currentView = menuView
+
+		case addUserView:
+			a.currentView = addUserView
+
+		case editUserView:
+			a.currentView = editUserView
+
+		case forceSendView:
+			a.currentView = forceSendView
+		}
 	}
+
 	return a, nil
 }
 
