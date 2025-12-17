@@ -5,12 +5,14 @@ import tea "github.com/charmbracelet/bubbletea"
 type AppModel struct {
 	currentView View
 	menuModel   MenuViewModel
+	addModel    AddUserModel
 }
 
 func InitAppModel() AppModel {
 	return AppModel{
 		currentView: menuView,
 		menuModel:   InitMenuViewModel(),
+		addModel:    InitAddUserModel(),
 	}
 }
 
@@ -25,6 +27,10 @@ func (a AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case menuView:
 			m, cmd := a.menuModel.Update(msg)
 			a.menuModel = m.(MenuViewModel)
+			return a, cmd
+		case addUserView:
+			m, cmd := a.addModel.Update(msg)
+			a.addModel = m.(AddUserModel)
 			return a, cmd
 		}
 
