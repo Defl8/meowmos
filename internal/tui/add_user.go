@@ -29,11 +29,18 @@ func InitAddUserModel() AddUserModel {
 		case 0:
 			t.Placeholder = "First Name"
 			t.Focus()
+			t.CharLimit = 32
+			t.Width = t.CharLimit + 5
+
 		case 1:
 			t.Placeholder = "Last Name"
+			t.CharLimit = 32
+			t.Width = t.CharLimit + 5
 
 		case 2:
 			t.Placeholder = "Phone Number"
+			t.Width = t.CharLimit + 5
+			t.CharLimit = 32
 		}
 		m.InputFields[i] = t
 	}
@@ -53,7 +60,7 @@ func (m AddUserModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.FocusPos = utils.MenuWrap(m.FocusPos+1, len(m.InputFields))
 			m.InputFields[currentInputPos].Blur()
 			m.InputFields[m.FocusPos].Focus()
-		
+
 		case key.Matches(msg, m.Keys.Back):
 			switchViewMsg := SwitchView(menuView)
 			return m, switchViewMsg
@@ -66,11 +73,18 @@ func (m AddUserModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m AddUserModel) View() string {
 	var builder strings.Builder
+
+	// headers for the fields
+	headers := []string{"Enter your first name", "Enter your last name", "Enter your phone number"}
 	for i := range m.InputFields {
+		builder.WriteString(headers[i])
+		builder.WriteRune('\n')
 		builder.WriteString(m.InputFields[i].View())
 		if i < len(m.InputFields)-1 {
 			builder.WriteRune('\n')
 		}
 	}
+
+	builder.WriteString("\n\nPress ctrl+s to save the user\nPress q to go back\n")
 	return builder.String()
 }
