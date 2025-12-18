@@ -35,6 +35,7 @@ func InitAddUserModel() AddUserModel {
 		case 2:
 			t.Placeholder = "Phone Number"
 		}
+		m.InputFields[i] = t
 	}
 	return m
 }
@@ -48,11 +49,19 @@ func (m AddUserModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch {
 		case key.Matches(msg, m.Keys.Tab):
+			currentInputPos := m.FocusPos
 			m.FocusPos = utils.MenuWrap(m.FocusPos+1, len(m.InputFields))
+			m.InputFields[currentInputPos].Blur()
 			m.InputFields[m.FocusPos].Focus()
+		
+		case key.Matches(msg, m.Keys.Back):
+			switchViewMsg := SwitchView(menuView)
+			return m, switchViewMsg
 		}
 	}
-	return m, nil
+	var cmd tea.Cmd
+	m.InputFields[m.FocusPos], cmd = m.InputFields[m.FocusPos].Update(msg)
+	return m, cmd
 }
 
 func (m AddUserModel) View() string {

@@ -45,8 +45,8 @@ func MultiFieldKeys() MultiFieldKeyMap {
 			key.WithHelp("tab", "move to next field"),
 		),
 		Save: key.NewBinding(
-			key.WithKeys("save"),
-			key.WithHelp("save", "save user"),
+			key.WithKeys("ctrl+s"),
+			key.WithHelp("ctrl+s", "save user"),
 		),
 		Back: key.NewBinding(
 			key.WithKeys("q"),

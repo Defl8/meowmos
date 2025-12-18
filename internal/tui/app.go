@@ -57,6 +57,8 @@ func (a AppModel) View() string {
 	switch a.currentView {
 	case menuView:
 		return a.menuModel.View()
+	case addUserView:
+		return a.addModel.View()
 	}
 	return ""
 }
