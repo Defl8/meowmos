@@ -9,12 +9,16 @@ import (
 	//"log"
 	//"os"
 
+	"fmt"
 	"log"
+	"os"
 
+	"meowmos/internal/database"
 	"meowmos/internal/tui"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/joho/godotenv"
+	_ "github.com/tursodatabase/libsql-client-go/libsql"
 )
 
 func init() {
@@ -24,7 +28,19 @@ func init() {
 }
 
 func main() {
-	p := tea.NewProgram(tui.InitAppModel())
+
+	url := os.Getenv("TURSO_DATABASE_URL")
+	token := os.Getenv("TURSO_AUTH_TOKEN")
+
+	db, err := database.ConnectTo(url+token, "libsql")
+	if err != nil {
+		log.Fatal("Could not connect to database." + err.Error())
+	}
+
+
+	fmt.Println("Connected to Turso database.")
+
+	p := tea.NewProgram(tui.InitAppModel(db))
 	if _, err := p.Run(); err != nil {
 		log.Fatal(err)
 	}

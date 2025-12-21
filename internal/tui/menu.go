@@ -3,6 +3,7 @@ package tui
 import (
 	"fmt"
 	"meowmos/internal/utils"
+	"strings"
 
 	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
@@ -51,7 +52,9 @@ func (m MenuViewModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m MenuViewModel) View() string {
-	output := "Welcome to the menu\n\n"
+	var builder strings.Builder
+
+	builder.WriteString("Welcome to the menu\n\n")
 
 	for i, action := range m.Actions {
 		cursor := " "
@@ -59,8 +62,8 @@ func (m MenuViewModel) View() string {
 			cursor = "->"
 		}
 
-		output += fmt.Sprintf("%s%s\n", cursor, action)
+		fmt.Fprintf(&builder, "%s%s\n", cursor, action)
 	}
-	output += "\nPress q to quit\n\n"
-	return output
+	builder.WriteString("\nPress q to quit\n\n")
+	return builder.String()
 }

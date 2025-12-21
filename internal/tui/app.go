@@ -1,6 +1,10 @@
 package tui
 
-import tea "github.com/charmbracelet/bubbletea"
+import (
+	"database/sql"
+
+	tea "github.com/charmbracelet/bubbletea"
+)
 
 type AppModel struct {
 	currentView View
@@ -8,11 +12,11 @@ type AppModel struct {
 	addModel    AddUserModel
 }
 
-func InitAppModel() AppModel {
+func InitAppModel(db *sql.DB) AppModel {
 	return AppModel{
 		currentView: menuView,
 		menuModel:   InitMenuViewModel(),
-		addModel:    InitAddUserModel(),
+		addModel:    InitAddUserModel(db),
 	}
 }
 

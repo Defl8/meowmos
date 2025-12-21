@@ -1,6 +1,8 @@
 package tui
 
 import (
+	"database/sql"
+	"meowmos/internal/database"
 	"meowmos/internal/utils"
 	"strings"
 
@@ -13,13 +15,21 @@ type AddUserModel struct {
 	FocusPos    int
 	InputFields []textinput.Model
 	Keys        MultiFieldKeyMap
+	Database    *sql.DB
 }
 
-func InitAddUserModel() AddUserModel {
+func (m AddUserModel) ClearInputs() {
+	for i := range m.InputFields {
+		m.InputFields[i].SetValue("")
+	}
+}
+
+func InitAddUserModel(db *sql.DB) AddUserModel {
 	m := AddUserModel{
 		FocusPos:    0,
 		InputFields: make([]textinput.Model, 3),
 		Keys:        MultiFieldKeys(),
+		Database:    db,
 	}
 
 	for i := range m.InputFields {
@@ -39,11 +49,12 @@ func InitAddUserModel() AddUserModel {
 
 		case 2:
 			t.Placeholder = "Phone Number"
-			t.Width = t.CharLimit + 5
 			t.CharLimit = 32
+			t.Width = t.CharLimit + 5
 		}
 		m.InputFields[i] = t
 	}
+
 	return m
 }
 
@@ -61,7 +72,20 @@ func (m AddUserModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.InputFields[currentInputPos].Blur()
 			m.InputFields[m.FocusPos].Focus()
 
+		case key.Matches(msg, m.Keys.Save):
+			user := database.NewUser(m.InputFields[0].Value(), m.InputFields[1].Value(), m.InputFields[2].Value())
+			err := database.AddUser(m.Database, *user)
+			if err != nil {
+				return m, nil
+			}
+
+			m.ClearInputs()
+
+			return m, SwitchView(menuView)
+
+
 		case key.Matches(msg, m.Keys.Back):
+			m.ClearInputs()
 			switchViewMsg := SwitchView(menuView)
 			return m, switchViewMsg
 		}
