@@ -51,6 +51,7 @@ func (a AppModel) View() string {
 	case addUserView:
 		return a.addModel.View()
 	}
+
 	return ""
 }
 
