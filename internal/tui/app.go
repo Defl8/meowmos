@@ -55,7 +55,7 @@ func (a AppModel) View() string {
 	return ""
 }
 
-func (a AppModel) switchView(v View) {
+func (a *AppModel) switchView(v View) {
 	switch v {
 	case menuView:
 		a.currentView = menuView
