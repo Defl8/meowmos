@@ -2,7 +2,6 @@ package tui
 
 import (
 	"database/sql"
-
 	tea "github.com/charmbracelet/bubbletea"
 )
 
@@ -39,19 +38,7 @@ func (a AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 
 	case SwitchViewMsg: // Switch to a different view
-		switch msg.View {
-		case menuView:
-			a.currentView = menuView
-
-		case addUserView:
-			a.currentView = addUserView
-
-		case editUserView:
-			a.currentView = editUserView
-
-		case forceSendView:
-			a.currentView = forceSendView
-		}
+		a.switchView(msg.View)
 	}
 
 	return a, nil
@@ -66,3 +53,33 @@ func (a AppModel) View() string {
 	}
 	return ""
 }
+
+func (a AppModel) switchView(v View) {
+	switch v {
+	case menuView:
+		a.currentView = menuView
+
+	case addUserView:
+		a.currentView = addUserView
+
+	case editUserView:
+		a.currentView = editUserView
+
+	case forceSendView:
+		a.currentView = forceSendView
+	}
+}
+
+// TODO: Implement once all views are created
+// func (a AppModel) handleKeyPress(msg tea.Msg) (tea.Model, tea.Cmd) {
+// 	switch a.currentView {
+// 	case menuView:
+// 		m, cmd := a.menuModel.Update(msg)
+// 		a.menuModel = m.(MenuViewModel)
+// 		return a, cmd
+// 	case addUserView:
+// 		m, cmd := a.addModel.Update(msg)
+// 		a.addModel = m.(AddUserModel)
+// 		return a, cmd
+// 	}
+// }
