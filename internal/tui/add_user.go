@@ -2,6 +2,7 @@ package tui
 
 import (
 	"database/sql"
+	"fmt"
 	"meowmos/internal/database"
 	"meowmos/internal/utils"
 	"strings"
@@ -16,6 +17,7 @@ type AddUserModel struct {
 	InputFields []textinput.Model
 	Keys        MultiFieldKeyMap
 	Database    *sql.DB
+	Status      string
 }
 
 func (m AddUserModel) ClearInputs() {
@@ -30,6 +32,7 @@ func InitAddUserModel(db *sql.DB) AddUserModel {
 		InputFields: make([]textinput.Model, 3),
 		Keys:        MultiFieldKeys(),
 		Database:    db,
+		Status:      "No errors",
 	}
 
 	for i := range m.InputFields {
@@ -76,13 +79,15 @@ func (m AddUserModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			user := database.NewUser(m.InputFields[0].Value(), m.InputFields[1].Value(), m.InputFields[2].Value())
 			err := database.AddUser(m.Database, *user)
 			if err != nil {
+				m.Status = err.Error()
 				return m, nil
 			}
 
 			m.ClearInputs()
 
-			return m, SwitchView(menuView)
+			m.Status = fmt.Sprintf("Saved user '%s' with phone number '%s'", user.FirstName+user.LastName, user.PhoneNumber)
 
+			return m, nil
 
 		case key.Matches(msg, m.Keys.Back):
 			m.ClearInputs()
@@ -109,6 +114,7 @@ func (m AddUserModel) View() string {
 		}
 	}
 
+	fmt.Fprintf(&builder, "\n\nStatus: %s", m.Status)
 	builder.WriteString("\n\nPress ctrl+s to save the user\nPress q to go back\n")
 	return builder.String()
 }
