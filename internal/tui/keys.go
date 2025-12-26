@@ -54,3 +54,27 @@ func MultiFieldKeys() MultiFieldKeyMap {
 		),
 	}
 }
+
+type ListKeyMap struct {
+	Up    key.Binding
+	Down  key.Binding
+	Back  key.Binding
+	Enter key.Binding
+}
+
+func ListKeys() ListKeyMap {
+	return ListKeyMap{
+		Up: key.NewBinding(
+			key.WithKeys("k", "up"),
+		),
+		Down: key.NewBinding(
+			key.WithKeys("j", "down"),
+		),
+		Back: key.NewBinding(
+			key.WithKeys("q"),
+		),
+		Enter: key.NewBinding(
+			key.WithKeys("enter"),
+		),
+	}
+}

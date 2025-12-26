@@ -71,3 +71,36 @@ func execQuery(db *sql.DB, query Query, values ...any) error {
 
 	return nil
 }
+
+func rowQuery(db *sql.DB, query Query, values ...any) (*sql.Rows, error) {
+	rows, err := db.Query(string(query), values...)
+	if err != nil {
+		return nil, err
+	}
+
+	return rows, nil
+}
+
+func GetAllUsers(db *sql.DB) ([]User, error) {
+	rows, err := rowQuery(db, GetUsers)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var users []User
+	for rows.Next() {
+		var user User
+		if err := rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.PhoneNumber); err != nil {
+			return nil, err
+		}
+
+		users = append(users, user)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
